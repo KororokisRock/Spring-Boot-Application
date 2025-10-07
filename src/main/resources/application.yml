@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+    show-sql: true
+  
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+    enabled: true
+  
+  web:
+    resources:
+      add-mappings: true
+  
+  mvc:
+    static-path-pattern: /**
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+jwt:
+  secret: "vZH7EArD9uMthysogAVbpRgWcZD5PhUwUdf3MdM99yetohGKskCiroaxfZOszsqVXojtIEEdoO35CbNycf7GlpxoGKKjuc9ZpF3Nh9dQ6MF5SQ1YP9iW0pIHzUf2QCrpCBqVkMSWOv18q6xJsF6cS9rOXyBwgQLqgSKJPRZ0ZFLfbZRlKJh7WpQ0I34vgcMj5vryvAsL2OchCgssKOyQyhoSvVohWILpDlhVRTYb2ZsS3djTHJmVStP3plF57QMohPtlUJWnkYHbefRYrPJ4Le6dLK0EF7p2FT5JBFs4CijzThU13urwn37DyGWhmxxlwsKL0kraNxQ0LECqh69EM2W84kqaclZRzwpQ325haRSzW8XE5F5oMZo1SVCYhp2MKnsBlBrUCPVYjfzgV1bJH6tKjb7JwkUbL8SXApNcKfVsbFKjm6GgZXMNxh9twv8UeUREbIveZ6aVmbldeG2FqvuBZer1Lov3l9GzxIb5vAB9umKLB7ZFQrjXORuYknWh"
+  token:
+    expiration: 3600
+  refresh:
+    token:
+      expiration: 86400
+
+server:
+  port: ${APPLICATION_PORT}
+  servlet:
+    context-path: /
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    enabled: true
+  show-actuator: false

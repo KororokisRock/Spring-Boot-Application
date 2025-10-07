@@ -1,0 +1,5 @@
+databaseChangeLog:
+    - include:
+        file: classpath:db/migration/001-initial-schema.yaml
+    - include:
+        file: classpath:db/migration/002-insert-test-data.yaml

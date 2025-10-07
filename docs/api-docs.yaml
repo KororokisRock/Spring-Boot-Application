@@ -1,0 +1,572 @@
+openapi: 3.0.1
+info:
+  title: Bank Cards Management API
+  description: REST API for managing bank cards and users with JWT authentication
+  contact:
+    name: API Support
+    email: support@bankcards.com
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+security:
+- bearerAuth: []
+tags:
+- name: Authentication
+  description: Authentication and token management APIs
+- name: Cards
+  description: Bank cards management APIs
+- name: Users
+  description: User management APIs (ADMIN only)
+- name: Registration
+  description: User registration APIs
+paths:
+  /user/delete:
+    post:
+      tags:
+      - Users
+      summary: Delete user (ADMIN only)
+      description: Delete user by username
+      operationId: deleteUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameDTO'
+        required: true
+      responses:
+        "400":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: User deleted successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /register:
+    post:
+      tags:
+      - Registration
+      summary: Register new user
+      description: Create a new user account
+      operationId: setRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationDTO'
+        required: true
+      responses:
+        "400":
+          description: Validation error or passwords don't match
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: User registered successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/transfer:
+    post:
+      tags:
+      - Cards
+      summary: Transfer between cards
+      description: Transfer money between user's own cards
+      operationId: transferCards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferBetweenCardsDTO'
+        required: true
+      responses:
+        "200":
+          description: Transfer completed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Validation error or insufficient funds
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/show:
+    post:
+      tags:
+      - Cards
+      summary: Get user's cards
+      description: Retrieve paginated list of current user's cards (masked numbers)
+      operationId: showCards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterPageCardDTO'
+        required: true
+      responses:
+        "200":
+          description: Cards retrieved successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/show-full-number:
+    post:
+      tags:
+      - Cards
+      summary: Get user's cards with full numbers
+      description: Retrieve paginated list of current user's cards with full card
+        numbers
+      operationId: showFullNumberCards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterPageCardDTO'
+        required: true
+      responses:
+        "200":
+          description: Cards retrieved successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/delete:
+    post:
+      tags:
+      - Cards
+      summary: Delete card (ADMIN only)
+      description: Delete a bank card
+      operationId: deleteCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardNumberDTO'
+        required: true
+      responses:
+        "400":
+          description: Validation error
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: Card deleted successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/block:
+    post:
+      tags:
+      - Cards
+      summary: Block card (ADMIN only)
+      description: Block a bank card
+      operationId: blockCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardNumberDTO'
+        required: true
+      responses:
+        "400":
+          description: Validation error
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: Card blocked successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/add:
+    post:
+      tags:
+      - Cards
+      summary: Add new card (ADMIN only)
+      description: Create a new bank card
+      operationId: addNewCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCardDTO'
+        required: true
+      responses:
+        "400":
+          description: Validation error
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: Card added successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+  /card/activate:
+    post:
+      tags:
+      - Cards
+      summary: Activate card (ADMIN only)
+      description: Activate a bank card
+      operationId: activeCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardNumberDTO'
+        required: true
+      responses:
+        "200":
+          description: Card activated successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Validation error
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+  /auth/sing-in:
+    post:
+      tags:
+      - Authentication
+      summary: User authentication
+      description: Authenticate user and return JWT tokens
+      operationId: singIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentialsDTO'
+        required: true
+      responses:
+        "200":
+          description: Successfully authenticated
+          content:
+            '*/*':
+              schema:
+                type: object
+        "403":
+          description: Authentication failed
+          content:
+            '*/*':
+              schema:
+                type: object
+  /auth/refresh:
+    post:
+      tags:
+      - Authentication
+      summary: Refresh token
+      description: Refresh JWT token using refresh token
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenDTO'
+        required: true
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/JwtAuthenticationDTO'
+        "400":
+          description: Invalid refresh token
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/JwtAuthenticationDTO'
+  /user/all:
+    get:
+      tags:
+      - Users
+      summary: Get all users (ADMIN only)
+      description: Retrieve list of all users
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: Users retrieved successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+  /card/all:
+    get:
+      tags:
+      - Cards
+      summary: Get all cards (ADMIN only)
+      description: Retrieve paginated list of all cards with filtering
+      operationId: getAllCards
+      parameters:
+      - name: filterPageCardDTO
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/FilterPageCardDTO'
+      responses:
+        "403":
+          description: Access denied - ADMIN role required
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: Cards retrieved successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    UsernameDTO:
+      required:
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 50
+          minLength: 2
+          type: string
+    RegistrationDTO:
+      required:
+      - password
+      - passwordConfirm
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 50
+          minLength: 2
+          type: string
+        password:
+          maxLength: 2147483647
+          minLength: 3
+          type: string
+        passwordConfirm:
+          type: string
+    TransferBetweenCardsDTO:
+      required:
+      - firstCardNumber
+      - secondCardNumber
+      type: object
+      properties:
+        firstCardNumber:
+          pattern: "^[0-9]{16}$"
+          type: string
+        secondCardNumber:
+          pattern: "^[0-9]{16}$"
+          type: string
+        amountTransferBetweenCards:
+          type: number
+          format: double
+    FilterPageCardDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username filter
+          example: Kororok
+        directionSort:
+          type: string
+          description: Sort direction
+          example: asc
+          enum:
+          - asc
+          - desc
+        sortBy:
+          type: string
+          description: Sort by field
+          example: id
+          enum:
+          - id
+          - card_number
+          - owner_id
+          - validity_period
+          - status
+          - balance
+        page:
+          type: integer
+          description: Page number (0-based)
+          format: int32
+          example: 0
+        size:
+          type: integer
+          description: Page size
+          format: int32
+          example: 10
+        cardNumber:
+          type: string
+          description: Card number filter (partial match)
+          example: "1234"
+        minEndDate:
+          type: string
+          description: Minimum expiration date
+          format: date
+          example: 2024-01-01
+        maxEndDate:
+          type: string
+          description: Maximum expiration date
+          format: date
+          example: 2025-12-31
+        status:
+          type: string
+          description: Card status filter
+          example: ACTIVE
+          enum:
+          - ACTIVE
+          - BLOCKED
+          - EXPIRED
+        minBalance:
+          type: number
+          description: Minimum balance
+          format: double
+          example: 0.0
+        maxBalance:
+          type: number
+          description: Maximum balance
+          format: double
+          example: 10000.0
+      description: Filters and pagination for card search
+    CardNumberDTO:
+      required:
+      - cardNumber
+      type: object
+      properties:
+        cardNumber:
+          pattern: "^[0-9]{16}$"
+          type: string
+    NewCardDTO:
+      required:
+      - cardNumber
+      - ownerId
+      - validityPeriod
+      type: object
+      properties:
+        cardNumber:
+          pattern: "^[0-9]{16}$"
+          type: string
+          description: 16-digit card number
+          example: "1234567812345678"
+        ownerId:
+          type: integer
+          description: Owner user ID
+          format: int32
+          example: 1
+        validityPeriod:
+          type: string
+          description: Card expiration date
+          format: date
+          example: 2025-12-31
+        balance:
+          type: number
+          description: Initial balance
+          format: double
+          example: 1000.0
+          default: 0.0
+      description: Data for creating a new card
+    UserCredentialsDTO:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 50
+          minLength: 2
+          type: string
+          description: Username
+          example: Kororok
+        password:
+          maxLength: 2147483647
+          minLength: 3
+          type: string
+          description: Password
+          example: password123
+      description: User credentials for authentication
+    RefreshTokenDTO:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    JwtAuthenticationDTO:
+      type: object
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        username:
+          type: string
+        role:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
