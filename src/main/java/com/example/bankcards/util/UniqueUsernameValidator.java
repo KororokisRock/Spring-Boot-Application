@@ -2,7 +2,6 @@ package com.example.bankcards.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.bankcards.repository.UserRepository;
@@ -13,11 +12,13 @@ import jakarta.validation.ConstraintValidatorContext;
 
 @Component
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
-
-    @Autowired
-    UserRepository userRepo;
+    private final UserRepository userRepo;
 
     private static final Logger logger = LoggerFactory.getLogger(UniqueUsernameValidator.class);
+
+    public UniqueUsernameValidator(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
     
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext ) {

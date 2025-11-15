@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import javax.naming.AuthenticationException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +23,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Authentication", description = "Authentication and token management APIs")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
     
     @PostMapping("/sing-in")
     @Operation(summary = "User authentication", description = "Authenticate user and return JWT tokens")

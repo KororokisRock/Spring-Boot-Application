@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,13 +37,16 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class CardService {
-    @Autowired
-    private CardRepository cardRepo;
+    private final CardRepository cardRepo;
 
-    @Autowired
-    private UserRepository userRepo;
+    private final UserRepository userRepo;
 
     private static final Logger logger = LoggerFactory.getLogger(CardService.class);
+
+    public CardService(CardRepository cardRepo, UserRepository userRepo) {
+        this.cardRepo = cardRepo;
+        this.userRepo = userRepo;
+    }
 
     public void transferBetweenCards(Authentication authentication, TransferBetweenCardsDTO transfer) {
         String username = authentication.getName();

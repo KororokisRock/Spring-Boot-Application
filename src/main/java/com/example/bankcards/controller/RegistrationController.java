@@ -1,6 +1,5 @@
 package com.example.bankcards.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +22,11 @@ import jakarta.validation.Valid;
 @Tag(name = "Registration", description = "User registration APIs")
 public class RegistrationController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     @Operation(summary = "Register new user", description = "Create a new user account")

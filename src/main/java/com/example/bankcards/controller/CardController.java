@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import javax.naming.AuthenticationException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -30,8 +29,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/card")
 @Tag(name = "Cards", description = "Bank cards management APIs")
 public class CardController {
-    @Autowired
-    private CardService cardService;
+    private final CardService cardService;
+
+    public CardController(CardService cardService) {
+        this.cardService = cardService;
+    }
 
     @GetMapping("/all")
     @Operation(summary = "Get all cards (ADMIN only)", description = "Retrieve paginated list of all cards with filtering")

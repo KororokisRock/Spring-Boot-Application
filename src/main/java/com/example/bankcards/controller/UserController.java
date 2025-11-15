@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +24,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/user")
 @Tag(name = "Users", description = "User management APIs (ADMIN only)")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/all")
     @Operation(summary = "Get all users (ADMIN only)", description = "Retrieve list of all users")

@@ -1,6 +1,5 @@
 package com.example.bankcards.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,11 +17,14 @@ import com.example.bankcards.security.JwtFilter;
 @EnableMethodSecurity
 public class SecurityConfig {
     
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
-    @Autowired
-    private ExceptionHandlingFilter exceptionFilter;
+    private final ExceptionHandlingFilter exceptionFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter, ExceptionHandlingFilter exceptionFilter) {
+        this.jwtFilter = jwtFilter;
+        this.exceptionFilter = exceptionFilter;
+    }
 
     private static final String[] WHITELIST = {
         "/swagger-ui.html",

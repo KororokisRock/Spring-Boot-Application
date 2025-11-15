@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,8 +22,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ExceptionHandlingFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingFilter.class);
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+
+    public ExceptionHandlingFilter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
