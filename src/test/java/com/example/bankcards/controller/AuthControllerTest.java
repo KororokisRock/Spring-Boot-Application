@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import com.example.bankcards.dto.JwtAuthenticationDTO;
 import com.example.bankcards.dto.RefreshTokenDTO;
@@ -39,11 +38,10 @@ class AuthControllerTest {
 
         when(userService.singIn(any(UserCredentialsDTO.class))).thenReturn(expectedResponse);
 
-        ResponseEntity<?> response = authController.singIn(credentials);
+        JwtAuthenticationDTO response = authController.singIn(credentials);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(expectedResponse, response.getBody());
+        assertEquals(expectedResponse, response);
         verify(userService).singIn(credentials);
     }
 

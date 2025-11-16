@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.UserDTO;
 import com.example.bankcards.dto.UsernameDTO;
 import com.example.bankcards.service.UserService;
@@ -45,8 +45,8 @@ public class UserController {
     @ApiResponse(responseCode = "400", description = "User not found")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> deleteUser(@RequestBody UsernameDTO username, BindingResult result) {
+    public MessageDTO deleteUser(@RequestBody UsernameDTO username, BindingResult result) {
         userService.deleteUserByUsername(username);
-        return ResponseEntity.ok("User delete successfully");
+        return new MessageDTO("User delete successfully");
     }
 }

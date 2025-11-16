@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import javax.naming.AuthenticationException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bankcards.dto.CardDTO;
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.CardNumberDTO;
 import com.example.bankcards.dto.FilterPageCardDTO;
 import com.example.bankcards.dto.NewCardDTO;
@@ -40,9 +40,9 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "Cards retrieved successfully")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> getAllCards(@RequestBody @Valid FilterPageCardDTO filterPageCardDTO, BindingResult result) {
+    public PaginatedResponse<CardDTO> getAllCards(@RequestBody @Valid FilterPageCardDTO filterPageCardDTO, BindingResult result) {
         PaginatedResponse<CardDTO> response = cardService.getPaginatedAllCardsAsDto(filterPageCardDTO);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @PostMapping("/add")
@@ -51,9 +51,9 @@ public class CardController {
     @ApiResponse(responseCode = "400", description = "Validation error")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> addNewCard(@RequestBody @Valid NewCardDTO newCardDTO, BindingResult result) {
+    public MessageDTO addNewCard(@RequestBody @Valid NewCardDTO newCardDTO, BindingResult result) {
         cardService.addNewCard(newCardDTO);
-        return ResponseEntity.ok("Card added");
+        return new MessageDTO("Card added");
     }
 
     @PostMapping("/block")
@@ -62,9 +62,9 @@ public class CardController {
     @ApiResponse(responseCode = "400", description = "Validation error")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> blockCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
+    public MessageDTO blockCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
         cardService.blockCard(cardNumber);
-        return ResponseEntity.ok("Card blocked");
+        return new MessageDTO("Card blocked");
     }
 
     @PostMapping("/activate")
@@ -73,9 +73,9 @@ public class CardController {
     @ApiResponse(responseCode = "400", description = "Validation error")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> activeCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
+    public MessageDTO activeCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
         cardService.activateCard(cardNumber);
-        return ResponseEntity.ok("Card activated");
+        return new MessageDTO("Card activated");
     }
 
     @PostMapping("/delete")
@@ -84,27 +84,27 @@ public class CardController {
     @ApiResponse(responseCode = "400", description = "Validation error")
     @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required")
     @ValidateBindingResult
-    public ResponseEntity<?> deleteCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
+    public MessageDTO deleteCard(@RequestBody @Valid CardNumberDTO cardNumber, BindingResult result) {
         cardService.deleteCard(cardNumber);
-        return ResponseEntity.ok("Card deleted");
+        return new MessageDTO("Card deleted");
     }
 
     @PostMapping("/show")
     @Operation(summary = "Get user's cards", description = "Retrieve paginated list of current user's cards (masked numbers)")
     @ApiResponse(responseCode = "200", description = "Cards retrieved successfully")
     @ValidateBindingResult
-    public ResponseEntity<?> showCards(Authentication authentication, @RequestBody @Valid FilterPageCardDTO filterPageCardDTO, BindingResult result) {
+    public PaginatedResponse<CardDTO> showCards(Authentication authentication, @RequestBody @Valid FilterPageCardDTO filterPageCardDTO, BindingResult result) {
         PaginatedResponse<CardDTO> response = cardService.getPaginatedAllUserCardsAsDto(filterPageCardDTO, authentication.getName(), true);
-        return ResponseEntity.ok().body(response);
+        return response;
     }
 
     @PostMapping("/show-full-number")
     @Operation(summary = "Get user's cards with full numbers", description = "Retrieve paginated list of current user's cards with full card numbers")
     @ApiResponse(responseCode = "200", description = "Cards retrieved successfully")
     @ValidateBindingResult
-    public ResponseEntity<?> showFullNumberCards(Authentication authentication, @RequestBody @Valid FilterPageCardDTO filters) throws AuthenticationException {
+    public PaginatedResponse<CardDTO> showFullNumberCards(Authentication authentication, @RequestBody @Valid FilterPageCardDTO filters) throws AuthenticationException {
         PaginatedResponse<CardDTO> response = cardService.getPaginatedAllUserCardsAsDto(filters, authentication.getName(), false);
-        return ResponseEntity.ok().body(response);
+        return response;
     }
 
     @PostMapping("/transfer")
@@ -112,8 +112,8 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "Transfer completed successfully")
     @ApiResponse(responseCode = "400", description = "Validation error or insufficient funds")
     @ValidateBindingResult
-    public ResponseEntity<?> transferCards(Authentication authentication, @RequestBody @Valid TransferBetweenCardsDTO transferBetweenCardsDTO, BindingResult result) {
+    public MessageDTO transferCards(Authentication authentication, @RequestBody @Valid TransferBetweenCardsDTO transferBetweenCardsDTO, BindingResult result) {
         cardService.transferBetweenCards(authentication, transferBetweenCardsDTO);
-        return ResponseEntity.ok("Transfer between cards completed successfully");
+        return new MessageDTO("Transfer between cards completed successfully");
     }
 }

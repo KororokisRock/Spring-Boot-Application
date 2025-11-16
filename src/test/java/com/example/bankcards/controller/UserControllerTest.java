@@ -19,12 +19,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.UserDTO;
 import com.example.bankcards.dto.UsernameDTO;
 import com.example.bankcards.exception.ValidationValueException;
@@ -79,11 +78,10 @@ class UserControllerTest {
         
         BindingResult bindingResult = new BeanPropertyBindingResult(usernameDTO, "usernameDTO");
 
-        ResponseEntity<?> response = proxiedController.deleteUser(usernameDTO, bindingResult);
+        MessageDTO response = proxiedController.deleteUser(usernameDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("User delete successfully", response.getBody());
+        assertEquals("User delete successfully", response.getMessage());
         
         verify(userService, times(1)).deleteUserByUsername(usernameDTO);
     }

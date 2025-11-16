@@ -9,7 +9,7 @@ COPY src ./src
 
 RUN mvn clean package
 
-FROM openjdk:17-oraclelinux8
+FROM amazoncorretto:17-alpine
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar

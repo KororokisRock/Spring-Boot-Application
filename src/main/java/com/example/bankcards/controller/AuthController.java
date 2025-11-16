@@ -2,7 +2,6 @@ package com.example.bankcards.controller;
 
 import javax.naming.AuthenticationException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +33,9 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "Successfully authenticated")
     @ApiResponse(responseCode = "403", description = "Authentication failed")
     @ValidateBindingResult
-    public ResponseEntity<?> singIn(@RequestBody UserCredentialsDTO userCredentialsDTO) throws AuthenticationException {
+    public JwtAuthenticationDTO singIn(@RequestBody UserCredentialsDTO userCredentialsDTO) throws AuthenticationException {
         JwtAuthenticationDTO jwtAuthenticationDTO = userService.singIn(userCredentialsDTO);
-        return ResponseEntity.ok(jwtAuthenticationDTO);
+        return jwtAuthenticationDTO;
     }
 
     @PostMapping("/refresh")

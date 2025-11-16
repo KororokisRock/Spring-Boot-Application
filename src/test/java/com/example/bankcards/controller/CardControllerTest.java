@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -33,6 +31,7 @@ import org.springframework.validation.FieldError;
 import com.example.bankcards.dto.CardDTO;
 import com.example.bankcards.dto.CardNumberDTO;
 import com.example.bankcards.dto.FilterPageCardDTO;
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.NewCardDTO;
 import com.example.bankcards.dto.PaginatedResponse;
 import com.example.bankcards.dto.TransferBetweenCardsDTO;
@@ -72,11 +71,10 @@ class CardControllerTest {
         PaginatedResponse<CardDTO> expectedResponse = createPaginatedResponse();
         when(cardService.getPaginatedAllCardsAsDto(filters)).thenReturn(expectedResponse);
 
-        ResponseEntity<?> response = proxiedController.getAllCards(filters, bindingResult);
+        PaginatedResponse<CardDTO> response = proxiedController.getAllCards(filters, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse, response.getBody());
+        assertEquals(expectedResponse, response);
         
         verify(cardService, times(1)).getPaginatedAllCardsAsDto(filters);
     }
@@ -103,11 +101,10 @@ class CardControllerTest {
         NewCardDTO newCardDTO = createValidNewCardDTO();
         BindingResult bindingResult = new BeanPropertyBindingResult(newCardDTO, "newCardDTO");
 
-        ResponseEntity<?> response = proxiedController.addNewCard(newCardDTO, bindingResult);
+        MessageDTO response = proxiedController.addNewCard(newCardDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Card added", response.getBody());
+        assertEquals("Card added", response.getMessage());
         
         verify(cardService, times(1)).addNewCard(newCardDTO);
     }
@@ -117,11 +114,10 @@ class CardControllerTest {
         CardNumberDTO cardNumberDTO = createValidCardNumberDTO();
         BindingResult bindingResult = new BeanPropertyBindingResult(cardNumberDTO, "cardNumber");
 
-        ResponseEntity<?> response = proxiedController.blockCard(cardNumberDTO, bindingResult);
+        MessageDTO response = proxiedController.blockCard(cardNumberDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Card blocked", response.getBody());
+        assertEquals("Card blocked", response.getMessage());
         
         verify(cardService, times(1)).blockCard(cardNumberDTO);
     }
@@ -131,11 +127,10 @@ class CardControllerTest {
         CardNumberDTO cardNumberDTO = createValidCardNumberDTO();
         BindingResult bindingResult = new BeanPropertyBindingResult(cardNumberDTO, "cardNumber");
 
-        ResponseEntity<?> response = proxiedController.activeCard(cardNumberDTO, bindingResult);
+        MessageDTO response = proxiedController.activeCard(cardNumberDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Card activated", response.getBody());
+        assertEquals("Card activated", response.getMessage());
         
         verify(cardService, times(1)).activateCard(cardNumberDTO);
     }
@@ -145,11 +140,10 @@ class CardControllerTest {
         CardNumberDTO cardNumberDTO = createValidCardNumberDTO();
         BindingResult bindingResult = new BeanPropertyBindingResult(cardNumberDTO, "cardNumber");
 
-        ResponseEntity<?> response = proxiedController.deleteCard(cardNumberDTO, bindingResult);
+        MessageDTO response = proxiedController.deleteCard(cardNumberDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Card deleted", response.getBody());
+        assertEquals("Card deleted", response.getMessage());
         
         verify(cardService, times(1)).deleteCard(cardNumberDTO);
     }
@@ -165,11 +159,10 @@ class CardControllerTest {
         
         when(authentication.getName()).thenReturn("testuser");
 
-        ResponseEntity<?> response = proxiedController.showCards(authentication, filters, bindingResult);
+        PaginatedResponse<CardDTO> response = proxiedController.showCards(authentication, filters, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse, response.getBody());
+        assertEquals(expectedResponse, response);
         
         verify(cardService, times(1))
             .getPaginatedAllUserCardsAsDto(filters, "testuser", true);
@@ -186,11 +179,10 @@ class CardControllerTest {
 
         when(authentication.getName()).thenReturn("testuser");
 
-        ResponseEntity<?> response = proxiedController.showFullNumberCards(authentication, filters);
+        PaginatedResponse<CardDTO> response = proxiedController.showFullNumberCards(authentication, filters);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse, response.getBody());
+        assertEquals(expectedResponse, response);
         
         verify(cardService, times(1))
             .getPaginatedAllUserCardsAsDto(filters, "testuser", false);
@@ -210,11 +202,10 @@ class CardControllerTest {
 
         when(authentication.getName()).thenReturn("testuser");
 
-        ResponseEntity<?> response = proxiedController.transferCards(authentication, transferDTO, bindingResult);
+        MessageDTO response = proxiedController.transferCards(authentication, transferDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Transfer between cards completed successfully", response.getBody());
+        assertEquals("Transfer between cards completed successfully", response.getMessage());
         
         verify(cardService, times(1)).transferBetweenCards(authentication, transferDTO);
         verify(authentication, times(1)).getName();

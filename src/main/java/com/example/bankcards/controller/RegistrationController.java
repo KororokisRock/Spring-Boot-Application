@@ -1,12 +1,12 @@
 package com.example.bankcards.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.RegistrationDTO;
 import com.example.bankcards.exception.AuthenticationFailedException;
 import com.example.bankcards.service.UserService;
@@ -33,8 +33,8 @@ public class RegistrationController {
     @ApiResponse(responseCode = "200", description = "User registered successfully")
     @ApiResponse(responseCode = "400", description = "Validation error or passwords don't match")
     @ValidateBindingResult
-    public ResponseEntity<?> setRegistration(@RequestBody @Valid RegistrationDTO registerDTO, BindingResult result) throws AuthenticationFailedException {
+    public MessageDTO setRegistration(@RequestBody @Valid RegistrationDTO registerDTO, BindingResult result) throws AuthenticationFailedException {
         userService.registerUser(registerDTO);
-        return ResponseEntity.ok("Registration complete");
+        return new MessageDTO("Registration complete");
     }
 }

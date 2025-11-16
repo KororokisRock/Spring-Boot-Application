@@ -12,9 +12,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
+import com.example.bankcards.dto.MessageDTO;
 import com.example.bankcards.dto.RegistrationDTO;
 import com.example.bankcards.exception.AuthenticationFailedException;
 import com.example.bankcards.service.UserService;
@@ -42,11 +42,10 @@ class RegistrationControllerTest {
         registrationDTO.setPassword("password123");
         registrationDTO.setPasswordConfirm("password123");
 
-        ResponseEntity<?> response = registrationController.setRegistration(registrationDTO, bindingResult);
+        MessageDTO response = registrationController.setRegistration(registrationDTO, bindingResult);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Registration complete", response.getBody());
+        assertEquals("Registration complete", response.getMessage());
         verify(userService).registerUser(registrationDTO);
     }
 
