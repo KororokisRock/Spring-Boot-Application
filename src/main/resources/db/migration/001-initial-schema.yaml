@@ -1,7 +1,17 @@
 databaseChangeLog:
+  - preConditions:
+  - onFail: HALT
+  - dbms:
+    type: mysql
   - changeSet:
       id: 001-create-users-table
       author: developer
+      preConditions:
+        - not:
+          - changeSetExecuted:
+            id: 001-create-users-table
+            author: developer
+            changeLogFile: 001-initial-schema.yaml
       changes:
         - createTable:
             tableName: users
@@ -37,6 +47,12 @@ databaseChangeLog:
   - changeSet:
       id: 002-create-cards-table
       author: developer
+      preConditions:
+        - not:
+          - changeSetExecuted:
+            id: 002-create-cards-table
+            author: developer
+            changeLogFile: 001-initial-schema.yaml
       changes:
         - createTable:
             tableName: cards
@@ -90,6 +106,12 @@ databaseChangeLog:
   - changeSet:
       id: 003-add-enum-constraint-cards-status
       author: developer
+      preConditions:
+        - not:
+          - changeSetExecuted:
+            id: 003-add-enum-constraint-cards-status
+            author: developer
+            changeLogFile: 001-initial-schema.yaml
       changes:
         - sql:
             sql: ALTER TABLE cards MODIFY status ENUM('ACTIVE', 'BLOCKED', 'EXPIRED') NOT NULL DEFAULT 'ACTIVE'

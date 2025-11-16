@@ -1,7 +1,17 @@
 databaseChangeLog:
+  - preConditions:
+  - onFail: HALT
+  - dbms:
+    type: mysql
   - changeSet:
       id: 002-insert-test-users
       author: developer
+      preConditions:
+        - not:
+          - changeSetExecuted:
+            id: 002-insert-test-users
+            author: developer
+            changeLogFile: 002-insert-test-data.yaml
       changes:
         - insert:
             tableName: users
@@ -34,6 +44,12 @@ databaseChangeLog:
   - changeSet:
       id: 002-insert-test-cards
       author: developer
+      preConditions:
+        - not:
+          - changeSetExecuted:
+            id: 002-insert-test-cards
+            author: developer
+            changeLogFile: 002-insert-test-data.yaml
       changes:
         - insert:
             tableName: cards
